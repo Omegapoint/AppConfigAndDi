@@ -85,7 +85,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1673102043958</updated>
-      <workItem from="1673102045447" duration="4511000" />
+      <workItem from="1673102045447" duration="4552000" />
     </task>
     <servers />
   </component>
@@ -95,24 +95,5 @@
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/AppConfigAndDi.Functions/DependencyInjectionFunction.cs</url>
-          <line>72</line>
-          <properties documentPath="$PROJECT_DIR$/AppConfigAndDi.Functions/DependencyInjectionFunction.cs" initialLine="74" containingFunctionPresentation="method 'Run'">
-            <startOffsets>
-              <option value="2512" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2575" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
