@@ -1,3 +1,4 @@
+using Backend.Repositories;
 using Backend.Services;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,8 @@ var host = new HostBuilder()
 
         s.AddTransient<ISomeService, SomeService>();
         s.AddTransient<IFirstLayerService, FirstLayerService>();
+
+        s.AddTransient<IMascotRepository, MascotFeatureFlagRepository>();
         
         // var configBuilder = new ConfigurationBuilder();
         // configBuilder.AddAzureAppConfiguration(options =>
@@ -35,7 +38,7 @@ var host = new HostBuilder()
         // var builtConfig = configBuilder.Build();
 
         // s.AddFeatureManagement(builtConfig);
-        s.AddScoped<IFeatureToggle, FeatureToggle>();
+        s.AddScoped<IFeatureFlagService, FeatureFlagService>();
     })
     .Build();
 
