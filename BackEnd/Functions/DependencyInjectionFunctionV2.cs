@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Backend.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Backend.Functions;
@@ -12,11 +13,15 @@ namespace Backend.Functions;
 public class DependencyInjectionFunctionV2
 {
     private readonly IFirstLayerService _firstLayerService;
+    private readonly IConfiguration _configuration;
 
-    public DependencyInjectionFunctionV2(IFirstLayerService firstLayerService)
+    public DependencyInjectionFunctionV2(IFirstLayerService firstLayerService,
+        IConfiguration configuration)
     {
         _firstLayerService = firstLayerService;
+        _configuration = configuration;
     }
+    
     [Function("DependencyInjectionFunctionV2")]
     public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "dependencyinjection/v2")] HttpRequestData req,
                     FunctionContext executionContext)
@@ -34,8 +39,10 @@ public class DependencyInjectionFunctionV2
                 new JsonStringEnumConverter()
             }
         });
+
+        var value = new { guids = guids, config = _configuration["CoolConfig"] };
         
-        var payload = JsonSerializer.Serialize(guids, jsonOptions);
+        var payload = JsonSerializer.Serialize(value, jsonOptions);
         response.WriteString(payload);
 
         return response;

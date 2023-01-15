@@ -1,10 +1,22 @@
 using Backend.Services;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.FeatureManagement;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
-    .ConfigureServices(s =>
+    .ConfigureAppConfiguration(builder =>
+    {
+        builder.AddAzureAppConfiguration("");
+        builder.AddAzureAppConfiguration(options =>
+        {
+            options.ConfigureRefresh(config => config.SetCacheExpiration(TimeSpan.FromSeconds(10)));
+            options.UseFeatureFlags(opt => opt.CacheExpirationInterval = TimeSpan.FromSeconds(10));
+        });
+    })
+    .ConfigureServices((builder, s) =>
     {
         s.AddTransient<ITransientService, TransientService>();
         s.AddScoped<IScopedService, ScopedService>();
@@ -12,6 +24,18 @@ var host = new HostBuilder()
 
         s.AddTransient<ISomeService, SomeService>();
         s.AddTransient<IFirstLayerService, FirstLayerService>();
+        
+        // var configBuilder = new ConfigurationBuilder();
+        // configBuilder.AddAzureAppConfiguration(options =>
+        // {
+        //     options.Connect("azureAppConfigEndpoint.Value");
+        //     options.UseFeatureFlags(featureFlagsOptions => { }); // default CacheExpirationInterval is 30 seconds
+        //     s.AddSingleton(options.GetRefresher());
+        // });
+        // var builtConfig = configBuilder.Build();
+
+        // s.AddFeatureManagement(builtConfig);
+        s.AddScoped<IFeatureToggle, FeatureToggle>();
     })
     .Build();
 
