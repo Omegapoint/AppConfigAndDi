@@ -2,7 +2,7 @@ using Backend.Services;
 
 namespace Backend.Repositories;
 
-public interface IMascotRepository
+public interface IMascotConfigRepository
 {
     Task<Mascot> GetMascot();
 }

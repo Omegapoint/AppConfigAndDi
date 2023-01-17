@@ -1,9 +1,10 @@
 using Backend.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 
 namespace Backend.Repositories;
 
-public class MascotConfigRepository : IMascotRepository
+public class MascotConfigRepository : IMascotConfigRepository
 {
     private readonly IConfiguration _configuration;
 
@@ -14,6 +15,7 @@ public class MascotConfigRepository : IMascotRepository
     
     public Task<Mascot> GetMascot()
     {
-        throw new NotImplementedException();
+        var mascot = new Mascot() { Species = _configuration["Mascot:Species"], Name = _configuration["Mascot:Name"] };
+        return Task.FromResult(mascot);
     }
 }

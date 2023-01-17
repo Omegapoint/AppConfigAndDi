@@ -2,7 +2,12 @@ using Backend.Services;
 
 namespace Backend.Repositories;
 
-public class MascotFeatureFlagRepository : IMascotRepository
+public interface IMascotFeatureFlagRepository
+{
+    Task<Mascot> GetMascot();
+}
+
+public class MascotFeatureFlagRepository : IMascotFeatureFlagRepository
 {
     private readonly IFeatureFlagService _featureFlagService;
 
@@ -13,7 +18,8 @@ public class MascotFeatureFlagRepository : IMascotRepository
     
     public async Task<Mascot> GetMascot()
     {
-        if (await _featureFlagService.ShouldUseNewMascot())
+        var shouldUseNewMascot = await _featureFlagService.ShouldUseNewMascot();
+        if (shouldUseNewMascot)
         {
             return GetNewMascot();
         }
@@ -21,7 +27,7 @@ public class MascotFeatureFlagRepository : IMascotRepository
         return GetOldMascot();
     }
 
-    private Mascot GetOldMascot() => new() { Name = "GulleGris", Species = "Pig" };
+    private Mascot GetOldMascot() => new() { Name = "Old Tom", Species = "Cat" };
 
-    private Mascot GetNewMascot() => new() { Name = "Shinzo", Species = "Red panda" };
+    private Mascot GetNewMascot() => new() { Name = "New Peppa", Species = "Pig" };
 }

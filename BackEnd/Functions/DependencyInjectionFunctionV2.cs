@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Backend.Helpers;
 using Backend.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -31,18 +32,7 @@ public class DependencyInjectionFunctionV2
 
         var guids = _firstLayerService.GetResponse();
         
-        var jsonOptions = new JsonSerializerOptions(new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Converters =
-            {
-                new JsonStringEnumConverter()
-            }
-        });
-
-        var value = new { guids = guids, config = _configuration["CoolConfig"] };
-        
-        var payload = JsonSerializer.Serialize(value, jsonOptions);
+        var payload = JsonSerializer.Serialize(guids, JsonHelper.GetJsonSerializerOptions());
         response.WriteString(payload);
 
         return response;

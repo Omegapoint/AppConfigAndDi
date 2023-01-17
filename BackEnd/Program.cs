@@ -5,40 +5,44 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
+using Microsoft.Azure.AppConfiguration.Functions.Worker;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWorkerDefaults()
-    .ConfigureAppConfiguration(builder =>
+    .ConfigureAppConfiguration((hostContext, builder) =>
     {
-        builder.AddAzureAppConfiguration("");
+        builder.AddJsonFile("local.settings.json");
         builder.AddAzureAppConfiguration(options =>
         {
-            options.ConfigureRefresh(config => config.SetCacheExpiration(TimeSpan.FromSeconds(10)));
+            options.Connect(Environment.GetEnvironmentVariable("AppConfigConnectionString"));
+            options.Select("Mascot:*")
+                .ConfigureRefresh(config => 
+                config.Register("Mascot:Settings:Sentinel", refreshAll: true)
+                    .SetCacheExpiration(TimeSpan.FromSeconds(10))
+                );
             options.UseFeatureFlags(opt => opt.CacheExpirationInterval = TimeSpan.FromSeconds(10));
         });
     })
-    .ConfigureServices((builder, s) =>
+    .ConfigureServices((builder, services) =>
     {
-        s.AddTransient<ITransientService, TransientService>();
-        s.AddScoped<IScopedService, ScopedService>();
-        s.AddSingleton<ISingletonService, SingletonService>();
+        services.AddTransient<ITransientService, TransientService>();
+        services.AddScoped<IScopedService, ScopedService>();
+        services.AddSingleton<ISingletonService, SingletonService>();
 
-        s.AddTransient<ISomeService, SomeService>();
-        s.AddTransient<IFirstLayerService, FirstLayerService>();
+        services.AddTransient<ISomeService, SomeService>();
+        services.AddTransient<IFirstLayerService, FirstLayerService>();
 
-        s.AddTransient<IMascotRepository, MascotFeatureFlagRepository>();
-        
-        // var configBuilder = new ConfigurationBuilder();
-        // configBuilder.AddAzureAppConfiguration(options =>
-        // {
-        //     options.Connect("azureAppConfigEndpoint.Value");
-        //     options.UseFeatureFlags(featureFlagsOptions => { }); // default CacheExpirationInterval is 30 seconds
-        //     s.AddSingleton(options.GetRefresher());
-        // });
-        // var builtConfig = configBuilder.Build();
+        // s.AddTransient<IMascotRepository, MascotFeatureFlagRepository>();
+        services.AddTransient<IMascotConfigRepository, MascotConfigRepository>();
 
-        // s.AddFeatureManagement(builtConfig);
-        s.AddScoped<IFeatureFlagService, FeatureFlagService>();
+        services.AddTransient<IMascotFeatureFlagRepository, MascotFeatureFlagRepository>();
+        services.AddTransient<IMascotService, MascotService>();
+        services.AddFeatureManagement();
+        services.AddAzureAppConfiguration();
+        services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+    })
+    .ConfigureFunctionsWorkerDefaults((context, app) =>
+    {
+        app.UseAzureAppConfiguration();
     })
     .Build();
 

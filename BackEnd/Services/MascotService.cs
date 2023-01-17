@@ -4,21 +4,22 @@ namespace Backend.Services;
 
 public interface IMascotService
 {
-    Task<Mascot> GetCurrentMascot();
+    Task<string> GetCurrentMascot();
 }
 
 public class MascotService : IMascotService
 {
-    private readonly IMascotRepository _mascotRepository;
+    private readonly IMascotConfigRepository _mascotConfigRepository;
 
-    public MascotService(IMascotRepository mascotRepository)
+    public MascotService(IMascotConfigRepository mascotConfigRepository)
     {
-        _mascotRepository = mascotRepository;
+        _mascotConfigRepository = mascotConfigRepository;
     }
     
-    public async Task<Mascot> GetCurrentMascot()
+    public async Task<string> GetCurrentMascot()
     {
-        return await _mascotRepository.GetMascot();
+        var mascot = await _mascotConfigRepository.GetMascot();
+        return $"Our current mascot is a {mascot.Species} and is named {mascot.Name}";
     }
 }
 

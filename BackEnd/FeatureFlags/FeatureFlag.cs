@@ -3,8 +3,7 @@ namespace Backend.FeatureFlags;
 public class MascotFeatureFlag : FeatureFlag 
 {
     public MascotFeatureFlag() : base("ShouldUseNewMascot")
-    {
-    }
+    { }
 }
 
 public abstract class FeatureFlag
