@@ -1,3 +1,5 @@
+using Azure.Security.KeyVault.Secrets;
+using Backend;
 using Backend.Repositories;
 using Backend.Services;
 using Microsoft.Extensions.Azure;
@@ -31,14 +33,17 @@ var host = new HostBuilder()
         services.AddTransient<ISomeService, SomeService>();
         services.AddTransient<IFirstLayerService, FirstLayerService>();
 
-        // s.AddTransient<IMascotRepository, MascotFeatureFlagRepository>();
         services.AddTransient<IMascotConfigRepository, MascotConfigRepository>();
-
         services.AddTransient<IMascotFeatureFlagRepository, MascotFeatureFlagRepository>();
+        services.AddSingleton<IMascotSingletonConfigRepository, MascotSingletonConfigRepository>();
+
         services.AddTransient<IMascotService, MascotService>();
         services.AddFeatureManagement();
         services.AddAzureAppConfiguration();
         services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+        
+        services.Configure<MascotOptions>(
+            builder.Configuration.GetSection(MascotOptions.Mascot));
     })
     .ConfigureFunctionsWorkerDefaults((context, app) =>
     {

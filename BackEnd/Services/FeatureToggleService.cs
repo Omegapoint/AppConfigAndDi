@@ -29,12 +29,6 @@ public class FeatureFlagService : IFeatureFlagService
     
     private async Task<bool> IsFlagEnabled(FeatureFlag featureFlag)
     {
-        var hej = new List<string>();
-        await foreach (var flag in _featureManager.GetFeatureNamesAsync())
-        {
-            hej.Add(flag);
-        }
-        
         await RefreshFeatureFlags();
         return await _featureManager.IsEnabledAsync(featureFlag.Name);
     }

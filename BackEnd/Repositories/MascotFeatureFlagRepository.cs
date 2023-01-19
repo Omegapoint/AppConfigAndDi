@@ -2,11 +2,6 @@ using Backend.Services;
 
 namespace Backend.Repositories;
 
-public interface IMascotFeatureFlagRepository
-{
-    Task<Mascot> GetMascot();
-}
-
 public class MascotFeatureFlagRepository : IMascotFeatureFlagRepository
 {
     private readonly IFeatureFlagService _featureFlagService;
