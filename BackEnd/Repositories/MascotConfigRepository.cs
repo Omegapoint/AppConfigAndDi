@@ -9,12 +9,15 @@ public class MascotConfigRepository : IMascotConfigRepository
 {
     private readonly IConfiguration _configuration;
     private readonly MascotOptions _mascotOptions;
+    private readonly MascotOptions _mascotOptionsSnapshot;
 
     public MascotConfigRepository(IConfiguration configuration,
-        IOptions<MascotOptions> mascotOptions)
+        IOptions<MascotOptions> mascotOptions,
+        IOptionsSnapshot<MascotOptions> mascotOptionsSnapshot)
     {
         _configuration = configuration;
-        _mascotOptions = configuration.GetSection(MascotOptions.Mascot).Get<MascotOptions>();
+        _mascotOptions = mascotOptions.Value;
+        _mascotOptionsSnapshot = mascotOptionsSnapshot.Value;
     }
     
     public Task<Mascot> GetMascot()
