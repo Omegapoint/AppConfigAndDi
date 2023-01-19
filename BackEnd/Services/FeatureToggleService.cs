@@ -7,6 +7,7 @@ namespace Backend.Services;
 public interface IFeatureFlagService
 {
     Task<bool> ShouldUseNewMascot();
+    Task<bool> GetABaby();
 }
 
 public class FeatureFlagService : IFeatureFlagService
@@ -26,6 +27,8 @@ public class FeatureFlagService : IFeatureFlagService
     {
         return await IsFlagEnabled(new MascotFeatureFlag());
     }
+
+    public async Task<bool> GetABaby() => await IsFlagEnabled(new GetABabyFeatureFlag());
     
     private async Task<bool> IsFlagEnabled(FeatureFlag featureFlag)
     {

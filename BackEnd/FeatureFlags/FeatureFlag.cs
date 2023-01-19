@@ -6,6 +6,12 @@ public class MascotFeatureFlag : FeatureFlag
     { }
 }
 
+public class GetABabyFeatureFlag : FeatureFlag
+{
+    public GetABabyFeatureFlag() : base("MaybeBaby") 
+    { }
+}
+
 public abstract class FeatureFlag
 {
     public readonly string Name;

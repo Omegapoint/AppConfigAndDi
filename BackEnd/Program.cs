@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
 using Microsoft.Azure.AppConfiguration.Functions.Worker;
+using Microsoft.FeatureManagement.FeatureFilters;
 
 var host = new HostBuilder()
     .ConfigureAppConfiguration((hostContext, builder) =>
@@ -38,7 +39,7 @@ var host = new HostBuilder()
         services.AddSingleton<IMascotSingletonConfigRepository, MascotSingletonConfigRepository>();
 
         services.AddTransient<IMascotService, MascotService>();
-        services.AddFeatureManagement();
+        services.AddFeatureManagement().AddFeatureFilter<PercentageFilter>();
         services.AddAzureAppConfiguration();
         services.AddScoped<IFeatureFlagService, FeatureFlagService>();
         
