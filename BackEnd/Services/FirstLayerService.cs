@@ -26,6 +26,7 @@ public class FirstLayerService : IFirstLayerService
         };
         
         response.AddRange(_someService.GetResponse());
+        response.AddRange(_someService.GetResponse());
 
         return response.OrderBy(x => x.InjectionType).ToList();
     }

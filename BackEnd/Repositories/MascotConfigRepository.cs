@@ -22,7 +22,7 @@ public class MascotConfigRepository : IMascotConfigRepository
     
     public Task<Mascot> GetMascot()
     {
-        var mascot = new Mascot() { Species = _mascotOptions.Species, Name = _configuration["Mascot:Name"] };
+        var mascot = new Mascot() { Species = _mascotOptionsSnapshot.Species, Name = _configuration["Mascot:Name"] };
         return Task.FromResult(mascot);
     }
 }
